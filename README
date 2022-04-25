@@ -1,0 +1,7 @@
+cd threadpool
+mkdir build
+cd build
+cmake ..
+make
+cd demo
+./threadpoolDemo
