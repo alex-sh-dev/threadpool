@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <chrono>
 #include "threadpool.h"
 
 using namespace std;
@@ -20,6 +21,22 @@ public:
 private:
     uint32_t _n;
 
+};
+
+class CSleepTask : public CTask {
+public:
+    CSleepTask(int secs) : CTask(), _secs(secs) {}
+    void run() override {
+        _secs = max(1, _secs);
+        int i = 0;
+        while (i <= _secs && !cancelled()) {
+            this_thread::sleep_for(chrono::seconds(1));
+            ++i;
+        }
+    }
+
+private:
+   int _secs;
 };
 
 int isNumber(const string& str) {
@@ -51,6 +68,8 @@ int main() {
     CThreadPool *tp = new CThreadPool(numOfThreads);
     deque<CTask *> tasks;
 
+    cout << "Info: this thread pool is not suspended by default. In other words, after adding task, a free thread executes it" << endl;
+
     int choice = 0;
     do {
         cout << "==Menu==" << endl;
@@ -60,6 +79,7 @@ int main() {
         cout << "3 - Cancel a task by index" << endl;
         cout << "4 - Suspend the thread pool" << endl;
         cout << "5 - Resume the thread pool" << endl;
+        cout << "6 - Cancell all tasks" << endl;
         cout << "9 - Quit" << endl;
         cout << "Selection: ";
 
@@ -69,7 +89,7 @@ int main() {
                 int subChoise = 0;
                 do {
                     cout << "==Tasks==" << endl;
-                    cout << "1 - Calclulate the factorial of a number; 2 - Back: ";
+                    cout << "1 - Calclulate the factorial of a number; 2 - Sleep; 3 - Back: ";
 
                     subChoise = input();
                     switch (subChoise) {
@@ -84,10 +104,19 @@ int main() {
                             cout << "task idnex = " << idx << " (n = " << n << ")" << endl;
                             break;
                         }
+                        case 2: {
+                            cout << "secs = ";
+                            int secs = max(1, input());
+                            CSleepTask *task = new CSleepTask(secs);
+                            tasks.push_back(task);
+                            uint64_t idx = tp->addTask(task);
+                            cout << "task idnex = " << idx << " (secs = " << secs << ")" << endl;
+                            break;
+                        }
                         default:
                             break;
                     }
-                } while (subChoise != 2);
+                } while (subChoise != 3);
                 break;
             }
             case 2: {
@@ -99,7 +128,7 @@ int main() {
                         cout << idx << ' ';
                     cout << "(count = " << waitingTasks.size() << ")" << endl;
                 } else
-                    cout << "There are no waithing tasks" << endl;
+                    cout << "There are no waiting tasks" << endl;
 
                 if (runningTasks.size() > 0) {
                     cout << "Running tasks = ";
@@ -127,6 +156,9 @@ int main() {
                 tp->resume();
                 cout << "The thread poll was resumed" << endl;
                 pressEnterToContinue();
+                break;
+            case 6:
+                tp->cancelAllTasks();
                 break;
             default:
                 break;

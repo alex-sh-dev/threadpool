@@ -88,6 +88,9 @@ void CThreadPool::suspend() {
 }
 
 void CThreadPool::resume() {
+    if (!_suspended)
+        return;
+
     _suspended = false;
     _queueCV.notify_all();
 }
