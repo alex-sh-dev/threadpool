@@ -79,7 +79,7 @@ int main() {
         cout << "3 - Cancel a task by index" << endl;
         cout << "4 - Suspend the thread pool" << endl;
         cout << "5 - Resume the thread pool" << endl;
-        cout << "6 - Cancell all tasks" << endl;
+        cout << "6 - Cancel all tasks" << endl;
         cout << "9 - Quit" << endl;
         cout << "Selection: ";
 

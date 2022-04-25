@@ -33,7 +33,7 @@ public:
      */
     void suspend();
     /**
-     * @brief Cancell suspension (see suspend())
+     * @brief Cancel suspension (see suspend())
      */
     void resume();
 
