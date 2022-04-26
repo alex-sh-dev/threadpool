@@ -1,6 +1,6 @@
 #include "task.h"
 
-CTask::CTask() {}
+CTask::CTask() : _resultReceiver(nullptr)  {}
 
 CTask::~CTask() {}
 
@@ -8,4 +8,12 @@ CTask::~CTask() {}
 
 void CTask::cancel() {
     _cancelled = true;
+}
+
+void CTask::setResultReceiver(ResultReceiver rr) {
+    _resultReceiver = rr;
+}
+
+CTask::ResultReceiver CTask::resultReceiver() {
+    return _resultReceiver;
 }

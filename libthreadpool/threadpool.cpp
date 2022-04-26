@@ -6,7 +6,7 @@ CThreadPool::CThreadPool(uint32_t numOfThreads) {
     numOfThreads = numOfThreads > 0 ? numOfThreads : max(thread::hardware_concurrency(), (unsigned int)defaultNumOfThreads);
     _threads.reserve(numOfThreads);
     for (uint32_t i = 0; i < numOfThreads; ++i)
-        _threads.push_back(thread(&CThreadPool::run, this));
+        _threads.push_back(thread(&CThreadPool::p_run, this));
 }
 
 CThreadPool::~CThreadPool() {
@@ -54,7 +54,7 @@ void CThreadPool::cancelTask(uint64_t taskIdx) {
     unique_lock<mutex> queueLock(_queueMtx);
     for (deque<pair<CTask*, uint64_t>>::iterator it = _queue.begin(); it != _queue.end();) {
         if ((*it).second == taskIdx) {
-            cancelTask((*it).first);
+            p_cancelTask((*it).first);
             _queue.erase(it);
             break;
         } else
@@ -65,21 +65,21 @@ void CThreadPool::cancelTask(uint64_t taskIdx) {
     unique_lock<mutex> runningTasksLock(_runningTasksMtx);
     map<uint64_t, CTask*>::iterator it = _runningTasks.find(taskIdx);
     if (it != _runningTasks.end())
-        cancelTask(it->second);
+        p_cancelTask(it->second);
     runningTasksLock.unlock();
 }
 
 void CThreadPool::cancelAllTasks() {
     unique_lock<mutex> queueLock(_queueMtx);
     while (!_queue.empty()) {
-       cancelTask(_queue.front().first);
+       p_cancelTask(_queue.front().first);
        _queue.pop_front();
     }
     queueLock.unlock();
 
     unique_lock<mutex> runningTasksLock(_runningTasksMtx);
     for (map<uint64_t, CTask*>::iterator it = _runningTasks.begin(); it != _runningTasks.end(); ++it)
-        cancelTask(it->second);
+        p_cancelTask(it->second);
     runningTasksLock.unlock();
 }
 
@@ -111,7 +111,7 @@ void CThreadPool::shutdown() {
 
 //private methods
 
-void CThreadPool::run() {
+void CThreadPool::p_run() {
     while (!_cancelled) {
         unique_lock<mutex> lock(_queueMtx);
         _queueCV.wait(lock, [this]() -> bool {
@@ -129,7 +129,7 @@ void CThreadPool::run() {
             lock1.unlock();
 
             if (!task->cancelled())
-                task->run();
+                task->run(task->resultReceiver());
 
             unique_lock<mutex> lock2(_runningTasksMtx);
             _runningTasks.erase(idx);
@@ -138,7 +138,7 @@ void CThreadPool::run() {
     }
 }
 
-inline void CThreadPool::cancelTask(CTask *task) {
+inline void CThreadPool::p_cancelTask(CTask* task) {
     if (!task)
         return;
 

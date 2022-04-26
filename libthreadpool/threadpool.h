@@ -1,8 +1,6 @@
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 
-#include "task.h"
-
 #include <deque>
 #include <thread>
 #include <mutex>
@@ -12,6 +10,8 @@
 #include <set>
 
 #include <vector>
+
+#include "task.h"
 
 using namespace std;
 
@@ -28,13 +28,7 @@ public:
     void cancelTask(uint64_t taskIdx);
     void cancelAllTasks();
 
-    /**
-     * @brief Suspend the execution of the thread pool. New tasks will be added to the queue, but will not be executed until resume() is called
-     */
     void suspend();
-    /**
-     * @brief Cancel suspension (see suspend())
-     */
     void resume();
 
     bool suspended();
@@ -55,8 +49,8 @@ private:
     atomic_bool _suspended{ false };
     uint64_t _lastTaskIdx = 0;
 
-    void run();
-    void cancelTask(CTask* task);
+    void p_run();
+    void p_cancelTask(CTask* task);
 };
 
 #endif // THREADPOOL_H
