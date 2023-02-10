@@ -15,42 +15,46 @@
 
 using namespace std;
 
-class CThreadPool {
+typedef map<uint64_t, CTaskPtr> CTaskMap;
+typedef deque<pair<CTaskPtr, uint64_t>> CTaskDeque;
+
+class CThreadPool
+{
 public:
-    CThreadPool(uint32_t numOfThreads);
-    ~CThreadPool();
+  CThreadPool(uint32_t numOfThreads);
+  ~CThreadPool();
 
-    uint64_t addTask(CTask* task);
+  uint64_t addTask(CTaskPtr task);
 
-    set<uint64_t> runningTaskIdxs();
-    set<uint64_t> waitingTaskIdxs();
+  set<uint64_t> runningTaskIdxs();
+  set<uint64_t> waitingTaskIdxs();
 
-    void cancelTask(uint64_t taskIdx);
-    void cancelAllTasks();
+  void cancelTask(uint64_t taskIdx);
+  void cancelAllTasks();
 
-    void suspend();
-    void resume();
+  void suspend();
+  void resume();
 
-    bool suspended();
+  bool suspended();
 
-    void shutdown();
+  void shutdown();
 
 private:
-    deque<pair<CTask*, uint64_t>> _queue;
-    mutex _queueMtx;
-    condition_variable _queueCV;
+  CTaskDeque _queue;
+  mutex _queueMtx;
+  condition_variable _queueCV;
 
-    map<uint64_t, CTask*> _runningTasks;
-    mutex _runningTasksMtx;
+  CTaskMap _runningTasks;
+  mutex _runningTasksMtx;
 
-    vector<thread> _threads;
+  vector<thread> _threads;
 
-    atomic_bool _cancelled{ false };
-    atomic_bool _suspended{ false };
-    uint64_t _lastTaskIdx = 0;
+  atomic_bool _cancelled{false};
+  atomic_bool _suspended{false};
+  uint64_t _lastTaskIdx = 0;
 
-    void p_run();
-    void p_cancelTask(CTask* task);
+  void run();
+  void cancelTask(CTaskPtr task);
 };
 
 #endif // THREADPOOL_H
