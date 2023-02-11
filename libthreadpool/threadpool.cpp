@@ -44,7 +44,7 @@ set<uint64_t> CThreadPool::runningTaskIdxs()
 {
   set<uint64_t> idxs;
   lock_guard<mutex> runningTasksLock(_runningTasksMtx);
-  for (CTaskMap::iterator it = _runningTasks.begin(); it != _runningTasks.end(); ++it) {
+  for (CTaskMap::const_iterator it = _runningTasks.cbegin(); it != _runningTasks.cend(); ++it) {
     idxs.insert(it->first);
   }
 
@@ -55,7 +55,7 @@ set<uint64_t> CThreadPool::waitingTaskIdxs()
 {
   set<uint64_t> idxs;
   lock_guard<mutex> queueLock(_queueMtx);
-  for (CTaskDeque::iterator it = _queue.begin(); it != _queue.end(); ++it) {
+  for (CTaskDeque::const_iterator it = _queue.cbegin(); it != _queue.cend(); ++it) {
     idxs.insert((*it).second);
   }
 
@@ -66,7 +66,7 @@ void CThreadPool::cancelTask(uint64_t taskIdx)
 {
   unique_lock<mutex> queueLock(_queueMtx);
 
-  for (CTaskDeque::iterator it = _queue.begin(); it != _queue.end(); ) {
+  for (CTaskDeque::const_iterator it = _queue.cbegin(); it != _queue.cend(); ) {
     if ((*it).second == taskIdx) {
       cancelTask((*it).first);
       _queue.erase(it);
@@ -78,8 +78,8 @@ void CThreadPool::cancelTask(uint64_t taskIdx)
   queueLock.unlock();
 
   unique_lock<mutex> runningTasksLock(_runningTasksMtx);
-  CTaskMap::iterator it = _runningTasks.find(taskIdx);
-  if (it != _runningTasks.end()) {
+  CTaskMap::const_iterator it = _runningTasks.find(taskIdx);
+  if (it != _runningTasks.cend()) {
     cancelTask(it->second);
   }
   runningTasksLock.unlock();
@@ -95,7 +95,7 @@ void CThreadPool::cancelAllTasks()
   queueLock.unlock();
 
   unique_lock<mutex> runningTasksLock(_runningTasksMtx);
-  for (CTaskMap::iterator it = _runningTasks.begin(); it != _runningTasks.end(); ++it) {
+  for (CTaskMap::const_iterator it = _runningTasks.cbegin(); it != _runningTasks.cend(); ++it) {
     cancelTask(it->second);
   }
   runningTasksLock.unlock();

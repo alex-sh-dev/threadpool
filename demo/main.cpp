@@ -84,7 +84,7 @@ int main()
           set<uint64_t> runningTasks = pTp->runningTaskIdxs();
           if (waitingTasks.size() > 0) {
             cout << "Waiting tasks = ";
-            for (uint64_t idx : waitingTasks) {
+            for (const uint64_t & idx : waitingTasks) {
               cout << idx << ' ';
             }
             cout << "(count = " << waitingTasks.size() << ")" << endl;
@@ -94,7 +94,7 @@ int main()
 
           if (runningTasks.size() > 0) {
             cout << "Running tasks = ";
-            for (uint64_t idx : runningTasks) {
+            for (const uint64_t & idx : runningTasks) {
               cout << idx << ' ';
             }
             cout << "(count = " << runningTasks.size() << ")" << endl;

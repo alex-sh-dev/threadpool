@@ -28,8 +28,8 @@ public:
   CTaskPtr task(uint64_t taskIdx)
   {
     lock_guard<mutex> lock(_mtx);
-    CTaskMap::iterator it = _tasks.find(taskIdx);
-    if (it != _tasks.end()) {
+    CTaskMap::const_iterator it = _tasks.find(taskIdx);
+    if (it != _tasks.cend()) {
       return it->second;
     }
 
@@ -49,7 +49,7 @@ public:
     }
 
     lock_guard<mutex> lock(_mtx);
-    for (CTaskMap::iterator it = _tasks.begin(); it != _tasks.end(); ++it) {
+    for (CTaskMap::const_iterator it = _tasks.cbegin(); it != _tasks.cend(); ++it) {
       if (it->second.get() != task.get()) {
         continue;
       }
@@ -62,9 +62,9 @@ public:
   CTaskResultPair getResult(uint64_t taskIdx)
   {
     unique_lock<mutex> lock(_mtx);
-    CTaskResultMap::iterator it = _results.find(taskIdx);
+    CTaskResultMap::const_iterator it = _results.find(taskIdx);
     CTask::ResultType result;
-    if (it != _results.end()) {
+    if (it != _results.cend()) {
       result = it->second;
     }
     lock.unlock();
