@@ -28,6 +28,8 @@ if (!_queue.empty() && !_suspended) {
 
 Другими словами, берем задачи до тех пор, пока они не закончатся, а когда закончатся и придет новая задача, то разбудим поток.
 
+### Code style
+Код приведен к стилю ament_code_style ([config](https://github.com/ament/ament_lint/blob/rolling/ament_uncrustify/ament_uncrustify/configuration/ament_code_style.cfg))
 
 ### Загрузка и установка пакетов для разработки
 ```bash
