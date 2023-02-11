@@ -135,7 +135,7 @@ int main()
               case 1: {
                   cout << "Get result of a task by index = ";
                   CTaskResultPair result = CTasksHolder::getInstance().getResult(input());
-                  bool taskHasNoCalcResult = result.first == nullptr;
+                  bool taskHasNoCalcResult = result.first.get() == nullptr;
                   if (!taskHasNoCalcResult) {
                     if (instanceof<CFactTask>(result.first.get())) {
                       uint64_t value = boost::any_cast<uint64_t>(result.second);
