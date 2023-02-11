@@ -82,7 +82,7 @@ int main()
       case 2: {
           set<uint64_t> waitingTasks = pTp->waitingTaskIdxs();
           set<uint64_t> runningTasks = pTp->runningTaskIdxs();
-          if (waitingTasks.size() > 0) {
+          if (!waitingTasks.empty()) {
             cout << "Waiting tasks = ";
             for (const uint64_t & idx : waitingTasks) {
               cout << idx << ' ';
@@ -92,7 +92,7 @@ int main()
             cout << "There are no waiting tasks" << endl;
           }
 
-          if (runningTasks.size() > 0) {
+          if (!runningTasks.empty()) {
             cout << "Running tasks = ";
             for (const uint64_t & idx : runningTasks) {
               cout << idx << ' ';
@@ -158,7 +158,7 @@ int main()
                 }
               case 2: {
                   const CTaskResultMap & results = CTasksHolder::getInstance().getResults();
-                  if (results.size() > 0) {
+                  if (!results.empty()) {
                     cout << "Results = ";
                     for (CTaskResultMap::const_iterator it = results.cbegin(); it != results.cend(); ++it) {
                       if (typeid(uint64_t) == it->second.type()) {
