@@ -12,7 +12,7 @@ class CTask
 {
 public:
   typedef boost::any ResultType;
-  typedef void (* ResultReceiver)(std::shared_ptr<CTask>, ResultType);
+  typedef void (* ResultReceiver)(shared_ptr<CTask>, ResultType);
 
 public:
   CTask();
@@ -31,6 +31,6 @@ private:
   ResultReceiver _resultReceiver;
 };
 
-typedef std::shared_ptr<CTask> CTaskPtr;
+typedef shared_ptr<CTask> CTaskPtr;
 
 #endif // TASK_H
