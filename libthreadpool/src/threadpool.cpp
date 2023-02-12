@@ -22,7 +22,7 @@ CThreadPool::~CThreadPool()
 
 //public methods
 
-uint64_t CThreadPool::addTask(CTaskPtr task)
+uint64_t CThreadPool::addTask(const CTaskPtr & task)
 {
   if (!task.get()) {
     return 0;
@@ -164,7 +164,7 @@ void CThreadPool::run()
   }
 }
 
-inline void CThreadPool::cancelTask(CTaskPtr task)
+inline void CThreadPool::cancelTask(const CTaskPtr & task)
 {
   if (!task.get()) {
     return;

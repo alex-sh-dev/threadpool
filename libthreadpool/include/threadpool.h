@@ -24,7 +24,7 @@ public:
   CThreadPool(uint32_t numOfThreads);
   ~CThreadPool();
 
-  uint64_t addTask(CTaskPtr task);
+  uint64_t addTask(const CTaskPtr & task);
 
   set<uint64_t> runningTaskIdxs();
   set<uint64_t> waitingTaskIdxs();
@@ -54,7 +54,7 @@ private:
   uint64_t _lastTaskIdx = 0;
 
   void run();
-  void cancelTask(CTaskPtr task);
+  void cancelTask(const CTaskPtr & task);
 };
 
 #endif // THREADPOOL_H

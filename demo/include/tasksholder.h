@@ -19,7 +19,7 @@ public:
   CTasksHolder(CTasksHolder const &) = delete;
   void operator=(CTasksHolder const &) = delete;
 
-  void addTask(CTaskPtr task, uint64_t taskIdx)
+  void addTask(const CTaskPtr & task, uint64_t taskIdx)
   {
     lock_guard<mutex> lock(_mtx);
     _tasks.insert({taskIdx, task});
@@ -42,7 +42,7 @@ public:
     _tasks.clear();
   }
 
-  void addResult(CTaskPtr task, CTask::ResultType result)
+  void addResult(const CTaskPtr & task, CTask::ResultType result)
   {
     if (result.empty()) {
       return;
