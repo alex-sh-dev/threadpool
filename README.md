@@ -42,8 +42,9 @@ git clone https://github.com/alex-sh-dev/threadpool.git
 cd threadpool
 mkdir build
 cd build
-cmake ..
+cmake -DCMAKE_INSTALL_PREFIX:PATH=$PWD/install ..
 make
-cd demo
+make install
+cd install/bin/
 ./threadpoolDemo
 ```

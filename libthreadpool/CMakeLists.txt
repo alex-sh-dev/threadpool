@@ -1,6 +1,22 @@
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
-add_library(threadpool SHARED
-    threadpool.cpp
-    task.cpp)
+cmake_minimum_required(VERSION 2.8)
 
-target_include_directories(threadpool PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+project(libthreadpool LANGUAGES CXX)
+set(LIB_NAME "threadpool")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+
+include_directories(
+  include
+)
+
+add_library(${LIB_NAME} SHARED
+  src/threadpool.cpp
+  src/task.cpp
+)
+
+install(TARGETS ${LIB_NAME}
+  LIBRARY DESTINATION lib
+)
+
+install(DIRECTORY include/
+  DESTINATION include/${LIB_NAME}
+)
