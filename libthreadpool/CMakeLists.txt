@@ -17,6 +17,6 @@ install(TARGETS ${LIB_NAME}
   LIBRARY DESTINATION lib
 )
 
-install(DIRECTORY include/
-  DESTINATION include/${LIB_NAME}
+install(DIRECTORY include
+  DESTINATION include
 )

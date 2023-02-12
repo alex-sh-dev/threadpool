@@ -2,7 +2,7 @@
 #define TASKS_H
 
 #include <thread>
-#include "task.h"
+#include "threadpool/task.h"
 
 class CFactTask : public CTask
 {

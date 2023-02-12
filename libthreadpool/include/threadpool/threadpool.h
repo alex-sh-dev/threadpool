@@ -8,7 +8,6 @@
 #include <atomic>
 #include <map>
 #include <set>
-
 #include <vector>
 
 #include "task.h"
